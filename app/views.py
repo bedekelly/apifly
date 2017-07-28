@@ -24,7 +24,7 @@ def to_csv(content):
 @converter("json")
 def to_json(content):
     """Expose the content as a JSON document."""
-    return jsonify(content)
+    return jsonify(data=content)
 
 
 @converter("html", default=True)
