@@ -1,15 +1,13 @@
 from flask import jsonify, request
 
 from .apifly import converter, expose_as
-from .utils import csv_header
+from .utils import csv_header, html_table
 from . import flask_app as app
 
 
 @converter("csv")
 def to_csv(content):
-    """
-    A naîve example converter: from a list of dictionaries to CSV format.
-    """
+    """Expose the content as a CSV file."""
     formatted_headers = []
     header_titles, example_data = zip(*content[0].items())
 
@@ -25,29 +23,19 @@ def to_csv(content):
 
 @converter("json")
 def to_json(content):
-    """Using Flask's inbuilt object->json converter."""
+    """Expose the content as a JSON document."""
     return jsonify(content)
 
 
 @converter("html", default=True)
 def to_html(content):
     """
-    A naîve example converter: from a list of dictionaries to formatted HTML
-    including the JSON response. This could also have included a table of the
-    data.
+    Return the content as a formatted HTML table for browsers.
     """
     headers = content[0].keys()
-    html = "<html><body><h1>Your data:</h1><table><tr>"
-    for header in headers:
-        html += f"<th>{header}</th>"
-    html += "</tr>"
-    for row in content:
-        html += "<tr>"
-        for item in row.values():
-            html += f"<td>{item}</td>"
-        html += "</tr>"
-    html += "</table></body></html>"
-    return html
+    rows = (r.values() for r in content)
+    return html_table(headers, rows)
+    
 
 
 @app.route("/")
@@ -57,3 +45,7 @@ def display_content():
     return [{"a": 1, "b": 2},
             {"a": 3, "b": 4},
             {"a": 5, "b": 6}]
+
+@app.route("/me")
+def other():
+    return "Hello, world!"
