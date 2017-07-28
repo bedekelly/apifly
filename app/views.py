@@ -1,24 +1,15 @@
 from flask import jsonify, request
 
 from .apifly import converter, expose_as
-from .utils import csv_header, html_table
+from .utils import csv_headers, html_table, csv_format
 from . import flask_app as app
 
 
 @converter("csv")
 def to_csv(content):
     """Expose the content as a CSV file."""
-    formatted_headers = []
-    header_titles, example_data = zip(*content[0].items())
-
-    for header_title, datum in zip(header_titles, example_data):
-        formatted_headers.append(csv_header(header_title, datum))
-    rows = [','.join(formatted_headers)]
-
-    for row in content:
-        rows.append(','.join(map(str, row.values())))
-
-    return '\n'.join(rows)
+    headers = csv_headers(content)
+    return csv_format(headers, content)
 
 
 @converter("json")
@@ -37,7 +28,6 @@ def to_html(content):
     return html_table(headers, rows)
     
 
-
 @app.route("/")
 @expose_as("csv", "json", "html")
 def display_content():
@@ -46,6 +36,3 @@ def display_content():
             {"a": 3, "b": 4},
             {"a": 5, "b": 6}]
 
-@app.route("/me")
-def other():
-    return "Hello, world!"

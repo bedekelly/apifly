@@ -1,3 +1,24 @@
+def csv_headers(content):
+    """
+    Given a list of dictionaries, format & yield each CSV header.
+    """
+    header_titles, example_data = zip(*content[0].items())
+    for header_title, datum in zip(header_titles, example_data):
+        yield csv_header(header_title, datum)
+
+
+def csv_format(headers, content):
+    """Generate and join a set of CSV rows and headers."""
+    return '\n'.join(csv_rows(headers, content))
+
+
+def csv_rows(headers, content):
+    """Generate a series of CSV rows given its headers and data."""
+    yield ','.join(headers)
+    for row in content:
+        yield ','.join(map(str, row.values()))
+
+
 def csv_header(header, example_data):
     """
     Utility function to produce a CSV-style header from the
