@@ -1,6 +1,6 @@
-#APIfly
+# APIfly
 
-_Serve your API in different formats depending on the request._
+_Serve your API in different formats depending on the request_
 
 Example use case: display a formatted HTML page with documentation to a request from a browser, but the pure JSON data to a request from curl.
 
@@ -31,4 +31,3 @@ def to_json(content, default=True):
 def display_content():
     return {'a': 1, 'b': 2, 'c': 3}
 ```
-B
